@@ -7,9 +7,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{% block title %}{% endblock title %}</title>
         <link rel="stylesheet" href={% static 'css/index.css' %}>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.4/dist/flowbite.min.css" />
+        <script src="https://unpkg.com/flowbite@1.5.4/dist/datepicker.js"></script>
+        <script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
         {% tailwind_css %}
     </head>
-    <body>
+    <body class="bg-white dark:bg-gray-900">
+        <script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
         <nav
             class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 dark:bg-gray-900"
         >

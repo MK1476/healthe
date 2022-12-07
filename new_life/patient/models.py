@@ -1,13 +1,14 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 from new_life import validators
 from new_life.constants import GENDER_CHOICES, BLOOD_GROUPS
 
 # Create your models here.
 class Patient(models.Model):
-
+    user = models.OneToOneField(User, models.CASCADE)
     full_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
     profile_pic = models.ImageField(upload_to='profile_photo/patient/', blank=True, validators=[validators.validate_file_size])

@@ -15,15 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from new_life.views import home
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
+from django.contrib.auth.views import LoginView
 
+app_name = 'main'
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
-    path('', home, name='home'),
+
     path('patient/', include('patient.urls')),
+    path('doctor/', include('doctor.urls')),
+    path('staff/', include('staff.urls')),
+    path('appointment/', include('appointment.urls')),
+
+    path('login', LoginView.as_view(template_name='login.html'), name='login'),
+    path('', views.home, name='index'),
     # path('theme/', include('tailwind_base.urls')),
 ]
 
