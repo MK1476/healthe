@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 
 app_name = 'main'
 urlpatterns = [
@@ -29,12 +29,18 @@ urlpatterns = [
     path('doctor/', include('doctor.urls')),
     path('staff/', include('staff.urls')),
     path('appointment/', include('appointment.urls')),
+    path('department/', include('department.urls')),
+    path('utils/', include('patient_utils.urls')),
 
     path('login', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout', LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('', views.home, name='index'),
+    path('about', views.about, name='about'),
+    path('theme', views.theme, name='theme'),
     # path('theme/', include('tailwind_base.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

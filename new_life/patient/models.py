@@ -2,7 +2,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 from django.contrib.auth.models import User
-
+from django.conf import settings
 from new_life import validators
 from new_life.constants import GENDER_CHOICES, BLOOD_GROUPS
 
@@ -10,8 +10,8 @@ from new_life.constants import GENDER_CHOICES, BLOOD_GROUPS
 class Patient(models.Model):
     user = models.OneToOneField(User, models.CASCADE)
     full_name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=50)
-    profile_pic = models.ImageField(upload_to='profile_photo/patient/', blank=True, validators=[validators.validate_file_size])
+    email = models.EmailField(max_length=50, null=True, blank=True)
+    profile_pic = models.ImageField(upload_to='profile_photo/patient/', blank=True, validators=[validators.validate_file_size], default='profile_photo/profile_placeholder.jpg')
     date_of_birth = models.DateField()
     phone_number = PhoneNumberField(region="AE", blank=False)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)

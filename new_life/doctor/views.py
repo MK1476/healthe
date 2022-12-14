@@ -1,18 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . forms import DoctorForm
 from . models import Doctor
 from department.models import Department
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, ListView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy, reverse
+from django.db.models import Count
 
 from new_life.constants import BLOOD_GROUPS, WORKING_HOURS, GENDER_CHOICES
 
 # Create your views here.
 def create(request):
+    if not request.user.is_staff:
+        return redirect('index')
     form = DoctorForm()
     error = ""
     
@@ -22,7 +25,7 @@ def create(request):
     if request.method == 'POST':
         data = request.POST.copy()
         form = DoctorForm(data, request.FILES)
-        print(form.files)
+
         username = data['user_name']
         pw, rep_pw = data['password'], data['repeat_password']
         if pw == rep_pw:
@@ -30,12 +33,15 @@ def create(request):
             if form.is_valid():
                 if not_created:
                     user.set_password(pw)
-                
+                    user.is_staff = True
+                    
                     doctor = form.save(commit=False)
                     doctor.user = user
 
                     doctor.save()
                     user.save()
+
+                    redirect("index")
                 else:
                     error = 'User already exists'
 
@@ -124,3 +130,15 @@ def create(request):
     
 def home(request):
     return render(request, 'index.html', {'name': 'Nihaal'})
+
+class DoctorListView(ListView):
+    model = Doctor
+    template_name = "doctor/doctor_list.html"
+
+    def get_queryset(self):
+        query_set = super().get_queryset().order_by('department')
+        return query_set
+
+class DoctorDetailView(DetailView):
+    model = Doctor
+    template_name = "doctor/doctor_detail.html"

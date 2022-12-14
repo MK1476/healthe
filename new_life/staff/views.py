@@ -2,11 +2,15 @@ from django.shortcuts import render, redirect
 from . forms import StaffForm
 from django.contrib.auth.models import User
 from new_life.constants import BLOOD_GROUPS, GENDER_CHOICES, WORKING_HOURS
-from . models import Role
+from django.views.generic import DetailView
+from . models import Role, Staff
 from department.models import Department
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 # Create your views here.
 def create(request):
+    if not request.user.is_staff:
+        return redirect('index')
     form = StaffForm()
     error = ""
     role = Role.objects.all()
@@ -15,7 +19,6 @@ def create(request):
     print(request.method)
     if request.method == 'POST':
         data = request.POST.copy()
-        print(data)
         form = StaffForm(data, request.FILES)
 
         username = data['user_name']
@@ -26,12 +29,14 @@ def create(request):
                 if not_created:
                     user.set_password(pw)
                     user.is_staff = True
+                    
                     staff = form.save(commit=False)
                     staff.user = user
 
                     staff.save()
                     user.save()
-                    return redirect('staff:home')
+
+                    return redirect('index')
                 else:
                     error = 'User already exists'
 
@@ -44,3 +49,10 @@ def create(request):
     
 def home(request):
     return render(request, 'index.html', {'name': 'Nihaal'})
+
+class StaffDetailView(UserPassesTestMixin, DetailView):
+    model = Staff
+    template_name = "staff/staff_detail.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
