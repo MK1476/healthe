@@ -3,10 +3,13 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from . import models
 from . forms import PatientForm, PatientUpdateForm
+from user_profile.forms import UserForm
 from new_life.constants import BLOOD_GROUPS, GENDER_CHOICES
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
+from new_life.constants import SIGN_UP_LAYOUT
 
 # Create your views here.
 def home(request):
@@ -20,40 +23,33 @@ def create(request):
     if request.user.is_authenticated:
         return redirect('index')
     
-    form = PatientForm()
+    pat_form = PatientForm()
+    user_form = UserForm()
     error = ""
     
     print(request.method)
     if request.method == 'POST':
-        data = request.POST.copy()
-        form = PatientForm(data, request.FILES)
-
-        username = data['user_name']
-        pw, rep_pw = data['password'], data['repeat_password']
-        if pw == rep_pw:
-            user, not_created = User.objects.get_or_create(username=username)
-            if form.is_valid():
-                if not_created:
-                    user.set_password(pw)
+        data = request.POST
+        user_form = UserForm(data, request.FILES)
+        if user_form.is_valid():
+            pw, rep_pw = user_form.cleaned_data['password'], user_form.cleaned_data['repeat_password']
+            if pw == rep_pw:
+                user = user_form.save(commit=False)
+                user.set_password(pw)
+                user.save()
                 
-                    patient = form.save(commit=False)
-                    patient.user = user
+                pat_form = PatientForm({'user': user})
+                pat_form.save()
 
-                    patient.save()
-                    user.save()
-
-                    return redirect('login')
-                    
-                else:
-                    error = 'User already exists'
-
+                return redirect('login')
             else:
-                error = form.errors
-        
+                error = "Make sure to enter the same password"
         else:
-            error = "Make sure to enter the same password"
+            error = user_form.errors
 
-    return render(request, 'patient/forms.html', {'form': form, 'genders': GENDER_CHOICES, 'blood_groups': BLOOD_GROUPS, "error": error})
+        messages.add_message(request, messages.ERROR, error)
+
+    return render(request, 'patient/trial_form.html', {'form': user_form, 'genders': GENDER_CHOICES, 'blood_groups': BLOOD_GROUPS, "error": error, 'layout': SIGN_UP_LAYOUT})
     
 def home(request):
     return render(request, 'index.html', {'name': 'Nihaal'})

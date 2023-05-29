@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import admin
 
 app_name = 'main'
 urlpatterns = [
@@ -39,6 +40,9 @@ urlpatterns = [
     path('theme', views.theme, name='theme'),
     # path('theme/', include('tailwind_base.urls')),
 ]
+
+admin.site.site_header = "New Life Hospital Administration"
+admin.site.site_title = "New Life admin"
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
