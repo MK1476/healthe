@@ -10,7 +10,7 @@ from staff.models import Role
 from patient.forms import PatientForm
 from doctor.forms import DoctorForm
 from staff.forms import StaffForm
-from django.contrib.auth.models import User
+from user_profile.models import UserProfile
 from random import choice
 
 file = open('../data.json','r')
@@ -40,7 +40,7 @@ def make_patients():
             username = data['user_name']
             password = data['password']
 
-            user, not_created = User.objects.get_or_create(username=username, password=password)
+            user, not_created = UserProfile.objects.get_or_create(username=username, password=password, full_name=patient['full_name'], category="P", date_of_birth=patient['date_of_birth'], phone_number=patient['phone_number'], gender=patient['gender'], blood_group=patient['blood_group'], address=patient['address'], eid=patient['eid'])
 
             if not_created:
                 user.set_password(password)
@@ -62,13 +62,13 @@ def make_doctors():
         doctor['department'] = dept_id
 
         form = DoctorForm(doctor)
-        
+
         if form.is_valid():
             data = form.cleaned_data
             username = data['user_name']
             password = data['password']
 
-            user, not_created = User.objects.get_or_create(username=username, password=password)
+            user, not_created = UserProfile.objects.get_or_create(username=username, password=password, full_name=doctor['full_name'], category="D", date_of_birth=doctor['date_of_birth'], phone_number=doctor['phone_number'], gender=doctor['gender'], blood_group=doctor['blood_group'], eid=doctor['eid'])
 
             if not_created:
                 user.set_password(password)
@@ -99,7 +99,7 @@ def make_staffs():
             username = data['user_name']
             password = data['password']
 
-            user, not_created = User.objects.get_or_create(username=username, password=password)
+            user, not_created = UserProfile.objects.get_or_create(username=username, password=password, full_name=staff['full_name'], category="S", date_of_birth=staff['date_of_birth'], phone_number=staff['phone_number'], gender=staff['gender'], blood_group=staff['blood_group'], eid=staff['eid'])
 
             if not_created:
                 user.set_password(password)

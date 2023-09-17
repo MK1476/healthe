@@ -4,6 +4,10 @@ from user_profile.models import UserProfile
 from new_life.constants import REGISTRATION_FIELDS, WIDGET_ATTRS
 
 class PatientForm(forms.ModelForm):
+    user_name = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
+    repeat_password = forms.CharField(widget=forms.PasswordInput())
+
     class Meta:
         model = Patient
         fields = '__all__'

@@ -9,7 +9,7 @@ class Staff(models.Model):
     role = models.ForeignKey('staff.Role', models.CASCADE)
 
     def __str__(self) -> str:
-        return self.full_name
+        return self.user.full_name
 
 class Role(models.Model):
     name = models.CharField(max_length=25)

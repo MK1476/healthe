@@ -5,6 +5,7 @@ from new_life import validators, constants
 
 # Create your models here.
 class UserProfile(AbstractUser):
+    full_name = models.CharField(max_length=100, blank=True, null=True)
     profile_pic = models.ImageField(upload_to='profile_photo/patient/', blank=True, validators=[validators.validate_file_size], default='profile_photo/profile_placeholder.jpg')
     category = models.CharField(choices=constants.CATEGORIES, default='P', max_length=1, null=True)
     date_of_birth = models.DateField(null=True)
