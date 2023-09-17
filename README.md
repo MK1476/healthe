@@ -68,7 +68,7 @@ To set up and run the Hospital Management System, follow these steps:
 - Access the admin panel at http://localhost:8000/admin using the superuser credentials created earlier. Here, you can manage patients, doctors, appointments, and medical records.
 
 ### Population Script
-- To populate the database with test data from [data.json]("/data.json) run the following command:
+- To populate the database with test data from [data.json](/data.json) run the following command:
     ```bash
     python script.py
     ```
