@@ -100,28 +100,28 @@ def update(request, pk):
         else:
             error = form.errors
 
-    #     pw, rep_pw = data['password'], data['repeat_password']
-    #     if pw == rep_pw:
-            # user, not_created = User.objects.get_or_create(username=username)
-    #         if form.is_valid():
-    #             if not_created:
-    #                 user.set_password(pw)
+        pw, rep_pw = data['password'], data['repeat_password']
+        if pw == rep_pw:
+            user, not_created = User.objects.get_or_create(username=username)
+            if form.is_valid():
+                if not_created:
+                    user.set_password(pw)
                 
-    #                 patient = form.save(commit=False)
-    #                 patient.user = user
+                    patient = form.save(commit=False)
+                    patient.user = user
 
-    #                 patient.save()
-    #                 user.save()
-    #                 return redirect('patient:home')
+                    patient.save()
+                    user.save()
+                    return redirect('patient:home')
                     
-    #             else:
-    #                 error = 'User already exists'
+                else:
+                    error = 'User already exists'
 
-    #         else:
-    #             error = form.errors
+            else:
+                error = form.errors
         
-    #     else:
-    #         error = "Make sure to enter the same password"
+        else:
+            error = "Make sure to enter the same password"
 
     return render(request, 'patient/update_form.html', {'form': form, 'genders': GENDER_CHOICES, 'blood_groups': BLOOD_GROUPS, "error": error, "patient": patient})
 

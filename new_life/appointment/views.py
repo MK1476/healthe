@@ -13,6 +13,7 @@ from django.views.generic import ListView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.db import connection
 
 
 # Create your views here.
@@ -101,9 +102,11 @@ class AppointmentList(ListView):
     def get_queryset(self):
         if not self.request.user.is_staff:
             patient = Patient.objects.get(user=self.request.user)
+            # print()
             today_dt = datetime.now(tz=pytz.timezone(settings.TIME_ZONE))
             content = super().get_queryset().filter(patient=patient).order_by('date_time_of_appointment').filter(date_time_of_appointment__gte=today_dt)
-            print(content)
+            print('content '+str(content))
+            print(connection.queries)
             return content
         else:
             try:

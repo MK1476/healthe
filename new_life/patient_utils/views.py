@@ -27,6 +27,7 @@ def create_prescription(request):
 
 def load_appointments(request):
     patient_id = request.GET.get('patient_id')
+    print(patient_id)
     patient = Patient.objects.get(pk=patient_id)
     doctor = Doctor.objects.get(user=request.user)
 

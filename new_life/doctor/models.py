@@ -10,4 +10,7 @@ class Doctor(models.Model):
     # appointments = models.ForeignKey('appointment.Appointment', models.CASCADE, related_name='doc_appointments', blank=True)
     
     def __str__(self) -> str:
-        return self.user.full_name
+        if self.user.full_name and self.user.full_name.strip():
+            return self.user.full_name.strip()
+        else:
+            return f"{self.user.first_name} {self.user.last_name}"
